@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "barcode-label-printer"
+version = "0.1.0"
+description = "A Python package for generating barcode labels and printing to various printers including Niimbot"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "David Kang", email = ""}
+]
+keywords = ["barcode", "label", "printer", "niimbot", "svg", "printing"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Printing",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = [
+    "python-barcode>=0.15.0",
+    "svgwrite>=1.4.0",
+    "reportlab>=3.6.0",
+    "PyPDF2>=3.0.0",
+    "pyserial>=3.5",
+    "pillow>=10.0.0",
+]
+
+[project.optional-dependencies]
+windows = [
+    "pywin32>=306",
+    "cairosvg>=2.7.0",
+]
+bluetooth = [
+    "pybluez>=0.23",
+]
+
+[project.urls]
+Homepage = "https://github.com/david2004kang/barcode-label-printer"
+Documentation = "https://github.com/david2004kang/barcode-label-printer#readme"
+Repository = "https://github.com/david2004kang/barcode-label-printer"
+Issues = "https://github.com/david2004kang/barcode-label-printer/issues"
+
+[tool.setuptools]
+packages = ["barcode_label_printer"]
+
+[tool.setuptools.package-data]
+"*" = ["*.md", "*.txt"]
+
+[tool.black]
+line-length = 100
+target-version = ['py38']
+
+[tool.pylint.messages_control]
+max-line-length = 100
