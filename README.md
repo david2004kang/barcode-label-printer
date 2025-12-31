@@ -2,6 +2,9 @@
 
 A Python package for generating barcode labels from JSON configuration and printing to various printers including Niimbot thermal printers.
 
+[![CI/CD Pipeline](https://github.com/david2004kang/barcode-label-printer/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/david2004kang/barcode-label-printer/actions/workflows/ci-cd.yml)
+[![PyPI version](https://badge.fury.io/py/barcode-label-printer.svg)](https://badge.fury.io/py/barcode-label-printer)
+
 ## Features
 
 - **Label Rendering**: Generate SVG labels from JSON configuration
@@ -141,6 +144,21 @@ if printer.connect():
 - B1, B18, B21, B31 (384px width)
 - D11, D110 (96px width)
 
+## Development
+
+### Running Tests
+
+```bash
+pip install -e ".[dev]"
+pytest tests/
+```
+
+### Self-Test
+
+```bash
+python tests/self_test.py
+```
+
 ## License
 
 MIT License
@@ -148,3 +166,9 @@ MIT License
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+## Links
+
+- **GitHub**: https://github.com/david2004kang/barcode-label-printer
+- **PyPI**: https://pypi.org/project/barcode-label-printer/
+- **Issues**: https://github.com/david2004kang/barcode-label-printer/issues
