@@ -43,6 +43,12 @@ windows = [
 bluetooth = [
     "pybluez>=0.23",
 ]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.0.0",
+    "pylint>=3.3.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/david2004kang/barcode-label-printer"
