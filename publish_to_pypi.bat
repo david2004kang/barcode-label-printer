@@ -11,7 +11,12 @@ python -m twine check dist/*
 
 echo.
 echo Uploading to PyPI...
-echo Please enter your PyPI token when prompted:
+if "%PYPI_TOKEN%"=="" (
+    echo Error: PYPI_TOKEN environment variable not set
+    echo Please set it using: set PYPI_TOKEN=your-token-here
+    pause
+    exit /b 1
+)
 python -m twine upload dist/* --username __token__ --password %PYPI_TOKEN%
 
 if %ERRORLEVEL% EQU 0 (

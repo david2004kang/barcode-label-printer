@@ -13,7 +13,7 @@
 在 Windows CMD 中執行：
 
 ```cmd
-set PYPI_TOKEN=YOUR_PYPI_TOKEN_HERE
+set PYPI_TOKEN=your-pypi-token-here
 .\publish_to_pypi.bat
 ```
 
@@ -34,15 +34,19 @@ python -m build
 python -m twine check dist/*
 ```
 
-4. 上傳到 PyPI：
+4. 上傳到 PyPI（使用環境變數，更安全）：
 ```bash
-python -m twine upload dist/* --username __token__ --password YOUR_PYPI_TOKEN_HERE
-```
+# Windows CMD
+set PYPI_TOKEN=your-pypi-token-here
+python -m twine upload dist/* --username __token__ --password %PYPI_TOKEN%
 
-   或者使用環境變數（更安全）：
-```bash
-set TWINE_PASSWORD=YOUR_PYPI_TOKEN_HERE
-python -m twine upload dist/* --username __token__
+# Windows PowerShell
+$env:PYPI_TOKEN = "your-pypi-token-here"
+python -m twine upload dist/* --username __token__ --password $env:PYPI_TOKEN
+
+# Linux/Mac
+export PYPI_TOKEN=your-pypi-token-here
+python -m twine upload dist/* --username __token__ --password $PYPI_TOKEN
 ```
 
 ## 注意事項

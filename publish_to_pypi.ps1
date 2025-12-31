@@ -9,8 +9,13 @@ python -m twine check dist/*
 
 Write-Host "`nUploading to PyPI..." -ForegroundColor Green
 
-# Set your PyPI token here or use environment variable
-$PYPI_TOKEN = "YOUR_PYPI_TOKEN_HERE"
+# Get PyPI token from environment variable
+$PYPI_TOKEN = $env:PYPI_TOKEN
+if (-not $PYPI_TOKEN) {
+    Write-Host "Error: PYPI_TOKEN environment variable not set" -ForegroundColor Red
+    Write-Host "Please set it using: `$env:PYPI_TOKEN = 'your-token-here'" -ForegroundColor Yellow
+    exit 1
+}
 
 if ($LASTEXITCODE -eq 0) {
     python -m twine upload dist/* --username __token__ --password $PYPI_TOKEN
