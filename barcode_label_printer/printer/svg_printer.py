@@ -88,25 +88,74 @@ class SvgPrinter:
 
     def _refresh_printer_list(self):
         """Refresh available printer list."""
+        import platform
+        
+        self.available_printers = []
+        
         try:
-            cmd = [
-                "powershell",
-                "-Command",
-                "Get-Printer | Select-Object Name | Format-Table -HideTableHeaders",
-            ]
-            result = subprocess.run(cmd, capture_output=True, text=True, shell=True)
+            system = platform.system()
+            
+            if system == "Windows":
+                # Windows: Use PowerShell
+                cmd = [
+                    "powershell",
+                    "-Command",
+                    "Get-Printer | Select-Object Name | Format-Table -HideTableHeaders",
+                ]
+                result = subprocess.run(cmd, capture_output=True, text=True, shell=True)
 
-            if result.returncode == 0:
-                self.available_printers = []
-                for line in result.stdout.strip().split("\n"):
-                    if line.strip():
-                        self.available_printers.append(line.strip())
+                if result.returncode == 0:
+                    for line in result.stdout.strip().split("\n"):
+                        if line.strip():
+                            self.available_printers.append(line.strip())
+                else:
+                    logging.debug("Failed to get printer list: %s", result.stderr)
+            elif system == "Linux":
+                # Linux: Use lpstat or CUPS
+                try:
+                    cmd = ["lpstat", "-p"]
+                    result = subprocess.run(cmd, capture_output=True, text=True, timeout=5)
+                    if result.returncode == 0:
+                        for line in result.stdout.strip().split("\n"):
+                            if line.startswith("printer"):
+                                # Extract printer name from "printer PRINTER_NAME is idle..."
+                                parts = line.split()
+                                if len(parts) > 1:
+                                    self.available_printers.append(parts[1])
+                except (subprocess.SubprocessError, FileNotFoundError):
+                    # lpstat not available, try CUPS
+                    try:
+                        cmd = ["lpinfo", "-v"]
+                        result = subprocess.run(cmd, capture_output=True, text=True, timeout=5)
+                        if result.returncode == 0:
+                            # Extract printer names from output
+                            for line in result.stdout.strip().split("\n"):
+                                if "direct" in line.lower() or "network" in line.lower():
+                                    # Try to extract printer name
+                                    parts = line.split()
+                                    if parts:
+                                        self.available_printers.append(parts[-1])
+                    except (subprocess.SubprocessError, FileNotFoundError):
+                        logging.debug("lpstat and lpinfo not available")
+            elif system == "Darwin":  # macOS
+                # macOS: Use lpstat
+                try:
+                    cmd = ["lpstat", "-p"]
+                    result = subprocess.run(cmd, capture_output=True, text=True, timeout=5)
+                    if result.returncode == 0:
+                        for line in result.stdout.strip().split("\n"):
+                            if line.startswith("printer"):
+                                parts = line.split()
+                                if len(parts) > 1:
+                                    self.available_printers.append(parts[1])
+                except (subprocess.SubprocessError, FileNotFoundError):
+                    logging.debug("lpstat not available on macOS")
             else:
-                logging.error("Failed to get printer list: %s", result.stderr)
-                self.available_printers = []
-        except (subprocess.SubprocessError, OSError, IOError) as e:
-            logging.error("Error listing printers: %s", e)
-            self.available_printers = []
+                logging.debug("Unsupported platform for printer listing: %s", system)
+                
+        except Exception as e:
+            logging.debug("Error listing printers: %s", e)
+            # Don't fail, just return empty list
 
     def get_available_printers(self):
         """

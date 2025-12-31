@@ -139,13 +139,15 @@ print("\nTesting SvgPrinter...")
 try:
     printer = SvgPrinter()
     
-    # Test printer list (may be empty in CI environment)
+    # Test printer list (may be empty in CI environment, which is OK)
     printers = printer.get_available_printers()
+    assert isinstance(printers, list), "get_available_printers() should return a list"
     print(f"✓ SvgPrinter initialized (found {len(printers)} printers)")
     
     # Test Niimbot serial ports (if available)
     if NIIMBOT_AVAILABLE:
         ports = printer.get_niimbot_serial_ports()
+        assert isinstance(ports, list), "get_niimbot_serial_ports() should return a list"
         print(f"✓ Niimbot serial ports check works (found {len(ports)} ports)")
     
 except Exception as e:
