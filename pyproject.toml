@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
 authors = [
-    {name = "David Kang", email = ""}
+    {name = "David Kang", email = "david2004kang@gmail.com"}
 ]
 keywords = ["barcode", "label", "printer", "niimbot", "svg", "printing"]
 classifiers = [

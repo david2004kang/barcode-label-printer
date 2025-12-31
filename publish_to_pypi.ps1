@@ -13,7 +13,7 @@ Write-Host "`nUploading to PyPI..." -ForegroundColor Green
 $PYPI_TOKEN = "YOUR_PYPI_TOKEN_HERE"
 
 if ($LASTEXITCODE -eq 0) {
-    echo $PYPI_TOKEN | python -m twine upload dist/* --username __token__ --password-stdin
+    python -m twine upload dist/* --username __token__ --password $PYPI_TOKEN
     
     if ($LASTEXITCODE -eq 0) {
         Write-Host "`n========================================" -ForegroundColor Green

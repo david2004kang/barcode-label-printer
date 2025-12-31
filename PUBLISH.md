@@ -39,6 +39,12 @@ python -m twine check dist/*
 python -m twine upload dist/* --username __token__ --password YOUR_PYPI_TOKEN_HERE
 ```
 
+   或者使用環境變數（更安全）：
+```bash
+set TWINE_PASSWORD=YOUR_PYPI_TOKEN_HERE
+python -m twine upload dist/* --username __token__
+```
+
 ## 注意事項
 
 1. **確保套件名稱唯一**：`barcode-label-printer` 必須在 PyPI 上可用
