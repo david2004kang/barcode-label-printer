@@ -1,38 +1,35 @@
 # Branch Protection 設定說明
 
-## 透過 GitHub Web UI 設定（推薦）
+## 快速設定（透過 GitHub Web UI）
 
-由於個人 repository 的 API 限制，建議透過 GitHub Web UI 設定 branch protection：
+由於 GitHub API 對個人 repository 的限制，建議透過 Web UI 設定：
 
-### 步驟
+### 直接連結
+**https://github.com/david2004kang/barcode-label-printer/settings/branches**
 
-1. **前往 Branch Protection 設定頁面**
-   - 連結：https://github.com/david2004kang/barcode-label-printer/settings/branches
-   - 或：Repository → Settings → Branches
+### 設定步驟
 
-2. **選擇 master branch**
-   - 在 "Branch protection rules" 區塊中，點擊 "Add rule" 或編輯現有規則
+1. **前往設定頁面**
+   - 點擊上方連結，或
+   - Repository → Settings → Branches
+
+2. **新增或編輯 Branch Protection Rule**
    - Branch name pattern: `master`
+   - 點擊 "Add rule" 或編輯現有規則
 
 3. **啟用以下保護規則**
 
    ✅ **Require a pull request before merging**
-   - ✅ Require approvals: `1`
-   - ✅ Dismiss stale pull request approvals when new commits are pushed: 取消勾選
-   - ✅ Require review from Code Owners: 取消勾選
+   - ✅ Require approvals: `1` (至少需要 1 個審核)
+   - ❌ Dismiss stale pull request approvals when new commits are pushed
+   - ❌ Require review from Code Owners
 
    ✅ **Require status checks to pass before merging**
    - ✅ Require branches to be up to date before merging
-   - Required status checks: 選擇所有 CI/CD checks（或留空讓所有檢查都必須通過）
+   - Required status checks: 留空（讓所有檢查都必須通過）
 
-   ✅ **Require conversation resolution before merging**
-   - （可選）啟用以確保所有討論都解決
-
-   ✅ **Do not allow bypassing the above settings**
-   - ✅ Include administrators: **勾選**（這會讓您也需要遵循規則）
-
-   ✅ **Restrict who can push to matching branches**
-   - 個人 repository 不支援此功能，但透過上述規則已可達到保護效果
+   ✅ **Include administrators**
+   - ✅ **勾選此選項** - 這會讓 repository owner 也需要遵循規則
 
    ❌ **Allow force pushes**: **取消勾選**
    ❌ **Allow deletions**: **取消勾選**
@@ -40,19 +37,28 @@
 4. **儲存變更**
    - 點擊 "Create" 或 "Save changes"
 
-## 透過 GitHub CLI 設定（進階）
+## 使用腳本開啟設定頁面
 
-如果 API 支援，可以使用以下命令：
+執行以下命令會自動開啟設定頁面：
 
 ```bash
-gh api repos/david2004kang/barcode-label-printer/branches/master/protection \
-  --method PUT \
-  -f required_status_checks='{"strict":true,"contexts":[]}' \
-  -f enforce_admins=true \
-  -f required_pull_request_reviews='{"required_approving_review_count":1}' \
-  -f allow_force_pushes=false \
-  -f allow_deletions=false
+./setup_branch_protection.sh
 ```
+
+或在 Windows 中：
+```cmd
+start https://github.com/david2004kang/barcode-label-printer/settings/branches
+```
+
+## 保護規則說明
+
+設定完成後：
+
+- ✅ **其他貢獻者**：必須透過 Pull Request，且需要至少 1 個審核才能合併
+- ✅ **Repository Owner (您)**：雖然是 admin，但如果啟用 "Include administrators"，也需要遵循規則
+- ✅ **CI/CD 檢查**：所有 GitHub Actions 測試必須通過才能合併
+- ❌ **Force Push**：不允許強制推送
+- ❌ **Branch Deletion**：不允許刪除 master branch
 
 ## 驗證設定
 
@@ -68,18 +74,18 @@ gh api repos/david2004kang/barcode-label-printer/branches/master/protection \
 ## 注意事項
 
 1. **Repository Owner 權限**
-   - 即使啟用 "Include administrators"，repository owner 通常仍可以直接 push
-   - 如需完全限制，需要透過 GitHub Settings 中的其他選項
+   - 即使啟用 "Include administrators"，repository owner 在某些情況下仍可能可以直接 push
+   - 如需完全限制，可能需要額外的 GitHub 設定
 
 2. **CI/CD 檢查**
-   - 確保所有 GitHub Actions workflows 都設定為 required status checks
-   - 這可以在 Branch Protection 設定中選擇
+   - 確保所有 GitHub Actions workflows 都正常運作
+   - 可以在 Branch Protection 設定中選擇特定的 status checks 作為必要檢查
 
-3. **緊急情況**
+3. **緊急修復**
    - 如果需要緊急修復，repository owner 可以暫時關閉保護規則
-   - 或使用 `--force-with-lease`（不推薦）
+   - 或使用 `--force-with-lease`（不推薦，且可能被保護規則阻止）
 
 ## 當前保護狀態
 
 查看當前保護規則：
-https://github.com/david2004kang/barcode-label-printer/settings/branches
+**https://github.com/david2004kang/barcode-label-printer/settings/branches**
